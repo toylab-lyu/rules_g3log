@@ -1,0 +1,138 @@
+cc_library(
+    name = "g3logrotate",
+    linkstatic = False,
+    srcs = glob([
+        "sink_logrotate/src/*.cpp",
+        "sink_logrotate/src/*.ipp",
+    ]),
+    hdrs = glob([
+        "sink_logrotate/src/g3sinks/*.h",
+    ]),
+    copts = ["-std=c++17"],
+    includes = ["sink_logrotate/src"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@g3log//:g3log",
+        "@net_zlib_zlib//:zlib",
+    ],
+)
+
+_G3SNIPPETS_HDRS = [
+    "ColorCoutSink.h",
+    "ColorCoutSinkLinux.h",
+    #"ColorCoutSinkWindows.h",
+    "FileLogSink.h",
+    #"g3logtracelogging.h",
+]
+
+cc_library(
+    name = "g3snippets",
+    linkstatic = False,
+    srcs = [
+        ":generated_g3snippets_cpp",
+    ],
+    hdrs = [
+        "sink_snippets/src/g3sinks/{}".format(f)
+        for f in _G3SNIPPETS_HDRS
+    ],
+    copts = ["-std=c++17"],
+    includes = ["sink_snippets/src"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@g3log//:g3log",
+    ],
+)
+
+genrule(
+    name = "generated_g3snippets_cpp",
+    outs = [
+        "sink_snippets/src/generated_g3snippets.cpp",
+    ],
+    cmd = """cat > $@ << EOL
+// AUTO GENERATED MACRO DEFINITIONS FOR G3SNIPPETS
+#include "g3sinks/FileLogSink.h"
+#include "g3sinks/ColorCoutSink.h"
+EOL
+""",
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "g3syslog",
+    linkstatic = False,
+    srcs = [
+        "sink_syslog/src/syslogsink.cpp",
+    ],
+    hdrs = [
+        "sink_syslog/src/g3sinks/syslogsink.hpp",
+    ],
+    copts = ["-std=c++17"],
+    includes = ["sink_syslog/src"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@g3log//:g3log",
+    ],
+)
+
+cc_binary(
+    name = "example_logrotate_and_filter",
+    linkstatic = False,
+    srcs = [
+        "examples/logrotate_main.cpp",
+    ],
+    deps = [
+        ":g3logrotate",
+        ":RotateTestHelper",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "RotateTestHelper",
+    linkstatic = False,
+    srcs = [
+        "test/RotateTestHelper.cpp",
+    ],
+    hdrs = [
+        "test/RotateTestHelper.h",
+    ],
+    copts = ["-std=c++17"],
+    includes = ["test"],
+    visibility = ["//visibility:private"],
+)
+
+cc_binary(
+    name = "example_syslog",
+    linkstatic = False,
+    srcs = [
+        "examples/syslog_main.cpp",
+    ],
+    deps = [
+        ":g3syslog",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+cc_binary(
+    name = "example_coloredcout",
+    linkstatic = False,
+    srcs = [
+        "examples/snippet_coloredcout_main.cpp",
+    ],
+    deps = [
+        ":g3snippets",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+cc_binary(
+    name = "example_filedescriptor",
+    linkstatic = False,
+    srcs = [
+        "examples/snippet_filelog_main.cpp",
+    ],
+    deps = [
+        ":g3snippets",
+    ],
+    visibility = ["//visibility:private"],
+)

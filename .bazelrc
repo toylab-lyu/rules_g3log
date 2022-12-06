@@ -1,0 +1,29 @@
+startup --batch_cpu_scheduling
+startup --host_jvm_args=-XX:-UseParallelGC
+
+common --color=yes
+
+build --output_filter="^//"
+
+build --local_ram_resources=HOST_RAM*.8
+build --local_cpu_resources=HOST_CPUS-1
+build --strategy=Javac=worker,local
+
+# build --per_file_copt=+//(third_party)/.*@-Wall,-Wextra,-Werror
+
+build:release -c opt
+build:release --linkopt=-s
+build:release --copt=-O3
+
+build:debug   -c dbg
+build:debug   --copt=-g
+build:debug   --copt=-Og
+build:debug   --strip=never
+
+build --dynamic_mode=fully
+build --force_pic
+build --copt=-fPIC
+build --copt=-Wall
+build --copt=-Wextra
+
+build --cxxopt="-std=c++17"
