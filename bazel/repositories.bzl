@@ -19,6 +19,10 @@ def g3log_repositories():
         remote = "https://github.com/KjellKod/g3log.git",
         commit = "dbd3d74a39d3ac09b85a124f6b2b2e12495ac9f8",
         shallow_since = "1669785395 -0700",
+        patches = [
+            "@com_github_lyu_rules_g3log//bazel/third_party:patch_files/g3log-Pretty-Fatal-messages.patch",
+        ],
+        patch_args = ["-p1"],
         # branch = "master",
     )
     maybe(

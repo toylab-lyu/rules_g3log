@@ -1,0 +1,53 @@
+From bd8ae62ed137b86056201deff655501696645410 Mon Sep 17 00:00:00 2001
+From: Lyu Shize <axililsz@gmail.com>
+Date: Thu, 8 Dec 2022 02:20:16 +0800
+Subject: [PATCH] Pretty Fatal messages
+
+Signed-off-by: Lyu Shize <axililsz@gmail.com>
+---
+ src/g3log/logmessage.hpp | 6 ++++--
+ src/logmessage.cpp       | 4 ++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/src/g3log/logmessage.hpp b/src/g3log/logmessage.hpp
+index 83795ee..0f99a86 100644
+--- a/src/g3log/logmessage.hpp
++++ b/src/g3log/logmessage.hpp
+@@ -102,8 +102,10 @@ namespace g3 {
+       static std::string FullLogDetailsToString(const LogMessage& msg);
+ 
+       using LogDetailsFunc = std::string (*) (const LogMessage&);
+-      std::string toString(LogDetailsFunc formattingFunc = DefaultLogDetailsToString) const;
+-
++      std::string toString(LogDetailsFunc formattingFunc) const;
++      std::string toString() const {
++         toString(_logDetailsToStringFunc);
++      }
+ 
+      void overrideLogDetailsFunc(LogDetailsFunc func) const;
+ 
+diff --git a/src/logmessage.cpp b/src/logmessage.cpp
+index e12a884..04795f7 100644
+--- a/src/logmessage.cpp
++++ b/src/logmessage.cpp
+@@ -47,7 +47,7 @@ namespace g3 {
+    std::string LogMessage::fatalLogToString(const LogMessage& msg) {
+       auto out = msg._logDetailsToStringFunc(msg);
+       static const std::string fatalExitReason = {"EXIT trigger caused by LOG(FATAL) entry: "};
+-      out.append("\n\t*******\t " + fatalExitReason + "\n\t" + '"' + msg.message() + '"');
++      out.append("\n\n*******\t " + fatalExitReason + "\n\t" + '"' + msg.message() + '"');
+       return out;
+    }
+ 
+@@ -55,7 +55,7 @@ namespace g3 {
+    std::string LogMessage::fatalCheckToString(const LogMessage& msg) {
+       auto out = msg._logDetailsToStringFunc(msg);
+       static const std::string contractExitReason = {"EXIT trigger caused by broken Contract:"};
+-      out.append("\n\t*******\t " + contractExitReason + " CHECK(" + msg.expression() + ")\n\t"
++      out.append("\n\n*******\t " + contractExitReason + " CHECK(" + msg.expression() + ")\n\t"
+                  + '"' + msg. message() + '"');
+       return out;
+    }
+-- 
+2.34.1
+
