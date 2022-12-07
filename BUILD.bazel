@@ -1,0 +1,29 @@
+cc_library(
+    name = "toylab_log",
+    linkstatic = False,
+    srcs = [
+        "src/log.cpp",
+    ],
+    hdrs = [
+        "src/toylab/log.hpp",
+    ],
+    copts = ["-std=c++17"],
+    includes = ["src"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@g3log//:g3log",
+        "@g3sinks//:g3syslog",
+    ],
+)
+
+cc_binary(
+    name = "example_simple",
+    linkstatic = False,
+    srcs = [
+        "examples/simple_main.cpp",
+    ],
+    deps = [
+        ":toylab_log",
+    ],
+    visibility = ["//visibility:private"],
+)
