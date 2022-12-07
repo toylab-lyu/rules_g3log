@@ -12,8 +12,9 @@ build --strategy=Javac=worker,local
 # build --per_file_copt=+//(third_party)/.*@-Wall,-Wextra,-Werror
 
 build:release -c opt
-build:release --linkopt=-s
+build:release --copt=-g
 build:release --copt=-O3
+build:release --linkopt=-s
 
 build:debug   -c dbg
 build:debug   --copt=-g

@@ -1,3 +1,5 @@
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
+
 cc_library(
     name = "g3logrotate",
     linkstatic = False,
@@ -135,4 +137,63 @@ cc_binary(
         ":g3snippets",
     ],
     visibility = ["//visibility:private"],
+)
+
+pkg_tar(
+    name = "libg3logrotate",
+    srcs = [
+        ":g3logrotate",
+    ],
+    extension = "tar.gz",
+    package_dir = "/usr/lib",
+    mode = "0644",
+    visibility = ["//visibility:public"],
+)
+
+pkg_tar(
+    name = "libg3snippets",
+    srcs = [
+        ":g3snippets",
+    ],
+    extension = "tar.gz",
+    package_dir = "/usr/lib",
+    mode = "0644",
+    visibility = ["//visibility:public"],
+)
+
+pkg_tar(
+    name = "libg3syslog",
+    srcs = [
+        ":g3syslog",
+    ],
+    extension = "tar.gz",
+    package_dir = "/usr/lib",
+    mode = "0644",
+    visibility = ["//visibility:public"],
+)
+
+pkg_tar(
+    name = "libg3sinks",
+    extension = "tar.gz",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":libg3logrotate",
+        ":libg3snippets",
+        ":libg3syslog",
+    ],
+)
+
+pkg_tar(
+    name = "g3sinks-examples",
+    srcs = [
+        ":example_logrotate_and_filter",
+        ":example_syslog",
+        ":example_coloredcout",
+        ":example_filedescriptor",
+    ],
+    extension = "tar.gz",
+    include_runfiles = True,
+    mode = "0755",
+    strip_prefix = ".",
+    visibility = ["//visibility:public"],
 )
