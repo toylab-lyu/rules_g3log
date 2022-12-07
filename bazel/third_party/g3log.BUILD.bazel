@@ -47,6 +47,9 @@ cc_library(
         for f in _G3LOG_HDRS
     ],
     copts = ["-std=c++17"],
+    # To make the function names available to the program
+    # https://www.gnu.org/software/libc/manual/html_node/Backtraces.html
+    linkopts = ["-rdynamic"],
     includes = ["src"],
     visibility = ["//visibility:public"],
 )
