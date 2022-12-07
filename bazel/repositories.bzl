@@ -4,15 +4,13 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive",)
 
 def g3log_repositories():
     maybe(
-        http_archive,
+        new_git_repository,
         name = "net_zlib_zlib",
-        sha256 = "6d4d6640ca3121620995ee255945161821218752b551a1a180f4215f7d124d45",
-        build_file = "@com_github_lyu_rules_g3log//bazel/third_party:zlib.BUILD",
-        strip_prefix = "zlib-cacf7f1d4e3d44d871b605da3b647f07d718623f",
-        urls = [
-            "https://mirror.bazel.build/github.com/madler/zlib/archive/cacf7f1d4e3d44d871b605da3b647f07d718623f.tar.gz",
-            "https://github.com/madler/zlib/archive/cacf7f1d4e3d44d871b605da3b647f07d718623f.tar.gz",
-        ],
+        build_file = "@com_github_lyu_rules_g3log//bazel/third_party:zlib.BUILD.bazel",
+        remote = "https://github.com/madler/zlib.git",
+        commit = "04f42ceca40f73e2978b50e93806c2a18c1281fc",
+        shallow_since = "1665637615 -0700",
+        # branch = "master",
     )
     maybe(
         new_git_repository,
